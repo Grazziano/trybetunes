@@ -45,7 +45,6 @@ export default class Search extends Component {
     const { inputValue } = this.state;
     this.setState({ loading: true });
     const findAll = await searchAlbumsAPI(inputValue);
-    // console.log(findAll);
     this.setState(
       {
         albuns: [...findAll],
@@ -67,8 +66,6 @@ export default class Search extends Component {
 
   render() {
     const { albuns, buttonIsDisabled, loading, inputValue, notFoundMessage } = this.state;
-
-    // if (loading) return <Loading />;
 
     return (
       <div data-testid="page-search">
@@ -95,22 +92,19 @@ export default class Search extends Component {
         { albuns.length > 0 ? `Resultado de álbuns de: ${inputValue}` : null }
 
         { albuns.length > 0 ? albuns.map((album) => (
-          // <div key={ album.artistId }>
-          //   <img src={ album.artworkUrl100 } alt={ album.artistName } />
-          //   <h4>{ album.collectionName }</h4>
-          //   <p>{ album.artistName }</p>
-          // </div>
-          <Link
-            data-testid={ () => `link-to-album-${album.collectionId}` }
-            key={ album.artistId }
-            to={ `/album/${album.collectionId}` }
-          >
-            <div>
-              <img src={ album.artworkUrl100 } alt={ album.artistName } />
-              <h3>{ album.collectionName }</h3>
-              <p>{ album.artistName }</p>
-            </div>
-          </Link>
+
+          <div key={ album.artistId }>
+            <img src={ album.artworkUrl100 } alt={ album.artistName } />
+            <h3>{ album.collectionName }</h3>
+            <p>{ album.artistName }</p>
+            <Link
+              data-testid={ `link-to-album-${album.collectionId}` }
+              to={ `/album/${album.collectionId}` }
+            >
+              Ver músicas
+            </Link>
+          </div>
+
         )) : null }
 
         { notFoundMessage !== '' ? notFoundMessage : null }
