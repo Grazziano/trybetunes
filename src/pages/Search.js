@@ -39,7 +39,7 @@ export default class Search extends Component {
           data-testid="search-artist-button"
           disabled={ buttonIsDisabled }
         >
-          Procurar
+          Pesquisar
         </button>
       </div>
     );
