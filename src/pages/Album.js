@@ -13,7 +13,7 @@ export default class Album extends Component {
       // idAlbum: '',
       artistName: '',
       albumName: '',
-      songs: [],
+      musicList: [],
       loading: false,
     };
 
@@ -35,14 +35,15 @@ export default class Album extends Component {
         // idAlbum: id,
         artistName: name,
         albumName: album,
-        songs: [...data],
+        musicList: data,
         loading: false,
       },
     );
   }
 
   render() {
-    const { artistName, albumName, songs, loading } = this.state;
+    const { artistName, albumName, musicList, loading } = this.state;
+    const [, ...data] = musicList;
 
     if (loading) return <Loading />;
 
@@ -54,14 +55,7 @@ export default class Album extends Component {
         { artistName !== '' ? <h2 data-testid="artist-name">{ artistName }</h2> : null }
         { albumName !== '' ? <h2 data-testid="album-name">{ albumName }</h2> : null }
 
-        {/* { songs.length !== 0 ? songs.map((song) => (
-          song.wrapperType === 'track' ? <MusicCard
-            key={ song.trackId }
-            trackName={ song.trackName }
-            previewUrl={ song.previewUrl }
-          /> : null
-        )) : null } */}
-        { songs.length !== 0 ? songs.map((song) => (
+        { data.length !== 0 ? data.map((song) => (
           <MusicCard
             key={ song.trackId }
             trackName={ song.trackName }
