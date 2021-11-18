@@ -58,6 +58,7 @@ export default class Album extends Component {
         { data.length !== 0 ? data.map((song) => (
           <MusicCard
             key={ song.trackId }
+            trackId={ song.trackId }
             trackName={ song.trackName }
             previewUrl={ song.previewUrl }
           />
