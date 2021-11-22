@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../components/MusicCard';
 import Loading from '../components/Loading';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 export default class Album extends Component {
   constructor() {
@@ -13,15 +14,31 @@ export default class Album extends Component {
       // idAlbum: '',
       artistName: '',
       albumName: '',
+      favoritesSongsList: [],
       musicList: [],
       loading: false,
+      // checked: false,
     };
 
     this.updateStateSongsList = this.updateStateSongsList.bind(this);
+    this.getFavoritesSongsList = this.getFavoritesSongsList.bind(this);
   }
 
   componentDidMount() {
     this.updateStateSongsList();
+    this.getFavoritesSongsList();
+  }
+
+  async getFavoritesSongsList() {
+    this.setState({ loading: true }, async () => {
+      const recoverFavotitesSongs = await getFavoriteSongs();
+      this.setState(
+        {
+          favoritesSongsList: [...recoverFavotitesSongs],
+          loading: false,
+        },
+      );
+    });
   }
 
   async updateStateSongsList() {
@@ -42,7 +59,7 @@ export default class Album extends Component {
   }
 
   render() {
-    const { artistName, albumName, musicList, loading } = this.state;
+    const { artistName, albumName, favoritesSongsList, musicList, loading } = this.state;
     const [, ...data] = musicList;
 
     if (loading) return <Loading />;
@@ -61,6 +78,10 @@ export default class Album extends Component {
             trackId={ song.trackId }
             trackName={ song.trackName }
             previewUrl={ song.previewUrl }
+            favoritesSongsList={ favoritesSongsList }
+            favoriteSelect={
+              !!favoritesSongsList.some((music) => music.trackId === song.trackId)
+            }
           />
         )) : null }
       </div>

@@ -13,16 +13,29 @@ export default class MusicCard extends Component {
     };
 
     this.saveFavorite = this.saveFavorite.bind(this);
+    this.isFavorite = this.isFavorite.bind(this);
+  }
+
+  componentDidMount() {
+    this.isFavorite();
   }
 
   handleChange = ({ target }) => {
     this.setState({ checked: target.checked }, () => {
       const checked = this.state;
-      const { trackId, trackName, previewUrl } = this.props;
+      const { trackName, previewUrl, trackId } = this.props;
       if (checked) {
-        return this.saveFavorite({ trackId, trackName, previewUrl });
+        return this.saveFavorite({ trackName, previewUrl, trackId });
       }
     });
+  }
+
+  isFavorite() {
+    const { trackId, favoritesSongsList } = this.props;
+
+    const exist = favoritesSongsList.some((song) => song.trackId === trackId);
+    console.log(exist);
+    if (exist) this.setState({ checked: true });
   }
 
   async saveFavorite(object) {
@@ -32,8 +45,11 @@ export default class MusicCard extends Component {
   }
 
   render() {
-    const { trackId, trackName, previewUrl } = this.props;
-    const { checked, loading } = this.state;
+    const { trackName, previewUrl, trackId, favoriteSelect } = this.props;
+    const {
+      checked,
+      loading,
+    } = this.state;
 
     if (loading) return <Loading />;
 
@@ -59,7 +75,7 @@ export default class MusicCard extends Component {
             id={ `checkbox-input-favorite-${trackId}` }
             data-testid={ `checkbox-music-${trackId}` }
             onChange={ this.handleChange }
-            checked={ checked }
+            checked={ favoriteSelect || checked }
           />
         </label>
       </div>
@@ -68,7 +84,13 @@ export default class MusicCard extends Component {
 }
 
 MusicCard.propTypes = {
-  trackId: PropTypes.string.isRequired,
+  trackId: PropTypes.number.isRequired,
   trackName: PropTypes.string.isRequired,
   previewUrl: PropTypes.string.isRequired,
+  favoritesSongsList: PropTypes.arrayOf(
+    PropTypes.shape({
+      trackId: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+  favoriteSelect: PropTypes.bool.isRequired,
 };
