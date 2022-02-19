@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, removeSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 import Loading from './Loading';
 
 export default class MusicCard extends Component {
@@ -14,6 +14,7 @@ export default class MusicCard extends Component {
 
     this.saveFavorite = this.saveFavorite.bind(this);
     this.isFavorite = this.isFavorite.bind(this);
+    this.removeFavorite = this.removeFavorite.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +28,7 @@ export default class MusicCard extends Component {
       if (checked) {
         return this.saveFavorite({ trackName, previewUrl, trackId });
       }
+      return this.removeFavorite({ trackName, previewUrl, trackId });
     });
   }
 
@@ -42,6 +44,17 @@ export default class MusicCard extends Component {
     this.setState({ loading: true });
     await addSong(object);
     this.setState({ loading: false });
+  }
+
+  async removeFavorite(object) {
+    this.setState({ loading: true });
+    await removeSong(object);
+    const songs = await getFavoriteSongs();
+    const newArrSongs = songs.filter((song) => song.trackId !== object.trackId);
+    newArrSongs.forEach((element) => {
+      this.saveFavorite(element);
+    });
+    this.setState({ checked: false, loading: false });
   }
 
   render() {
